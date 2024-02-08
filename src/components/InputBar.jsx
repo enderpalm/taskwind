@@ -8,7 +8,9 @@ const getPlaceHolderText = () =>
 const InputBar = ({callback, prevTask ,taskState}) => {
     const handleSubmit = (e) => {
         e.preventDefault();
-        callback(e.target[0].value, prevTask, taskState);
+        let value = e.target[0].value;
+        if (value === '') return;
+        callback(value, prevTask, taskState);
         e.target[0].value = '';
     }
     return (

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { addTask } from "./api/TaskLogic";
+import { Task, addTask } from "./api/TaskLogic";
 import InputBar from "./components/InputBar";
 import TaskPageButton from "./components/TaskPageButton";
+import TaskItem from "./components/TaskItem";
 
 const App = () => {
   const [completePage, setCompletePage] = useState(false);
@@ -19,7 +20,9 @@ const App = () => {
 
   useEffect(() => {
     window.localStorage.setItem("taskList", JSON.stringify(taskList));
-  });
+    setPendingCount(pendingList.length);
+    setCompletedCount(completedList.length);
+  },[taskList, pendingList, completedList]);
 
   return (
     <>
@@ -51,37 +54,15 @@ const App = () => {
           }}
         />
       </div>
-      <ul>
-        {taskList.map((task, index) => {
-          if (task.completed === completePage) {
+      <div className='flex justify-center'>
+        <div className='grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-10/12 justify-center gap-4 mt-4'>
+          {taskList.filter((task) => task.completed === completePage).map((task, index) => {
             return (
-              <li key={task.id} className='flex justify-center'>
-                <div className='flex justify-between w-10/12 max-w-md p-2 m-2 bg-idle rounded-lg'>
-                  <p className='text-lg font-jetbrains'>{task.name}</p>
-                  <button
-                    className='bg-accent_glow text-accent p-2 rounded-lg hover:bg-accent_glow_hover hover:text-accent_hover'
-                    onClick={() => {
-                      let updatedList = taskList;
-                      updatedList[index].completed =
-                        !updatedList[index].completed;
-                      setTaskList(updatedList);
-                      setPendingCount(
-                        updatedList.filter((task) => !task.completed).length
-                      );
-                      setCompletedCount(
-                        updatedList.filter((task) => task.completed).length
-                      );
-                    }}
-                  >
-                    {task.completed ? "Undo" : "Complete"}
-                  </button>
-                </div>
-              </li>
+              <TaskItem key={index} taskObj={task} prevTask={taskList} taskSet={setTaskList}/>
             );
-          }
-          return null;
-        })}
-      </ul>
+          })}
+        </div>
+      </div>
     </>
   );
 };
