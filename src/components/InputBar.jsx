@@ -1,5 +1,3 @@
-import React from "react";
-
 const placeHolderText = ["Do my homework", "Make my bed"];
 
 const getPlaceHolderText = () =>
@@ -7,9 +5,14 @@ const getPlaceHolderText = () =>
   placeHolderText[Math.floor(Math.random() * placeHolderText.length)] +
   "'";
 
-const InputBar = () => {
-  return (
-    <form className='flex flex-wrap justify-center w-10/12 max-w-md '>
+const InputBar = ({callback, prevTask ,taskState}) => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        callback(e.target[0].value, prevTask, taskState);
+        e.target[0].value = '';
+    }
+    return (
+    <form id="taskform" className='flex flex-wrap justify-center w-10/12 max-w-md ' onSubmit={handleSubmit}>
       <input
         type='text'
         placeholder={getPlaceHolderText()}
